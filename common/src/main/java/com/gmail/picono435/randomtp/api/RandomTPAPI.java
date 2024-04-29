@@ -208,7 +208,7 @@ public class RandomTPAPI {
     }
 
     public static boolean isSafe(ServerLevel world, BlockPos.MutableBlockPos mutableBlockPos) {
-        if (isEmpty(world, mutableBlockPos) && !isDangerBlocks(world, mutableBlockPos)) {
+        if (isEmpty(world, mutableBlockPos) && !isDangerBlocks(world, mutableBlockPos) && world.getWorldBorder().isWithinBounds(mutableBlockPos)) {
             return true;
         }
         return false;

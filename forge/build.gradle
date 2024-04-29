@@ -1,43 +1,51 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'com.github.johnrengelman.shadow'
 }
 
 architectury {
-    forgeLike(["forge", "neoforge"]) {
-        it.platformPackage "neoforge", "forge"
-        it.remapForgeLike "net/minecraftforge/common/extensions/IForgeItem", "net/neoforged/neoforge/common/extensions/IItemExtension"
-        it.remapForgeLike "net/minecraftforge/client/event/TextureStitchEvent\$Post", "net/neoforged/neoforge/client/event/TextureAtlasStitchedEvent"
-        it.remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid", "net/neoforged/neoforge/fluids/BaseFlowingFluid"
-        it.remapForgeLike "net/minecraftforge/fluids/ForgeFlowingFluid\$Properties", "net/neoforged/neoforge/fluids/BaseFlowingFluid\$Properties"
-        it.remapForgeLike "net/minecraftforge/common/ForgeHooks", "net/neoforged/neoforge/common/CommonHooks"
-    }
+    platformSetupLoomIde()
+    forge()
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:$rootProject.forge_version"
 
-    compileOnly(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
+
+    forgeRuntimeLibrary(implementation(shadowBundle('org.spongepowered:configurate-yaml:4.1.2')))
 }
 
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
+processResources {
+    inputs.property 'version', project.version
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
+    filesMatching('META-INF/mods.toml') {
+        expand version: project.version
     }
 }
 
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+}

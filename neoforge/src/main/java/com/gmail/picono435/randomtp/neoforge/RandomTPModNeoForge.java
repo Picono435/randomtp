@@ -2,7 +2,6 @@ package com.gmail.picono435.randomtp.neoforge;
 
 import com.gmail.picono435.randomtp.RandomTPMod;
 
-import com.gmail.picono435.randomtp.forge.EventBuses;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 

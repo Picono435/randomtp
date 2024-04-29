@@ -1,6 +1,7 @@
 package com.gmail.picono435.randomtp.data;
 
 import com.gmail.picono435.randomtp.RandomTPMod;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -19,7 +20,7 @@ public class ServerState extends SavedData {
     public HashMap<UUID, PlayerState> players = new HashMap<>();
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         CompoundTag playersNbtCompound = new CompoundTag();
         players.forEach((UUID, playerSate) -> {
             CompoundTag playerStateNbt = new CompoundTag();
@@ -32,7 +33,7 @@ public class ServerState extends SavedData {
         return compoundTag;
     }
 
-    public static ServerState createFromNbt(CompoundTag compoundTag) {
+    public static ServerState createFromNbt(CompoundTag compoundTag, HolderLookup.Provider provider) {
         ServerState serverState = new ServerState();
 
         CompoundTag playersTag = compoundTag.getCompound("players");
