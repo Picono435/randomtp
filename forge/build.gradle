@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:$rootProject.forge_version"
+    forge "net.minecraftforge:forge:$rootProject.minecraft_version-$rootProject.forge_version"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
@@ -42,10 +42,37 @@ processResources {
 }
 
 shadowJar {
+    exclude "fabric.mod.json"
+
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+    archiveClassifier.set("dev-shadow")
+
+    relocate 'org.yaml', 'com.gmail.picono435.dependencies.yaml'
+    relocate 'org.spongepowered', 'com.gmail.picono435.dependencies.spongepowered'
+    relocate 'io.leangen', 'com.gmail.picono435.dependencies.leagen'
+    relocate 'org.checkerframework', 'com.gmail.picono435.dependencies.checkerframework'
+    relocate 'com.google.errorprone', 'com.gmail.picono435.dependencies.errorprone'
+    relocate 'me.lucko', 'com.gmail.picono435.dependencies.lucko'
 }
 
 remapJar {
     input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set("minecraftforge")
+}
+
+jar {
+    archiveClassifier.set("dev")
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
 }

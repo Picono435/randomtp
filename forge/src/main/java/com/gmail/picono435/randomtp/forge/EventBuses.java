@@ -24,22 +24,28 @@ public class EventBuses {
             RandomTPMod.MOD_ID,
             "command.basic",
             PermissionTypes.BOOLEAN,
-            (arg, uUID, permissionDynamicContexts) -> true);
+            (player, uuid, permissionDynamicContexts) -> true);
     public static PermissionNode<Boolean> INTERDIM_COMMAND_PERM = new PermissionNode<>(
             RandomTPMod.MOD_ID,
             "command.interdim",
             PermissionTypes.BOOLEAN,
-            (arg, uUID, permissionDynamicContexts) -> true);
+            (player, uuid, permissionDynamicContexts) -> true);
     public static PermissionNode<Boolean> INTERBIOME_COMMAND_PERM = new PermissionNode<>(
             RandomTPMod.MOD_ID,
             "command.interbiome",
             PermissionTypes.BOOLEAN,
-            (arg, uUID, permissionDynamicContexts) -> true);
+            (player, uuid, permissionDynamicContexts) -> true);
     public static PermissionNode<Boolean> COOLDOWN_EXEMPT_PERM = new PermissionNode<>(
             RandomTPMod.MOD_ID,
             "cooldown.exempt",
             PermissionTypes.BOOLEAN,
-            (arg, uUID, permissionDynamicContexts) -> false);
+            (player, uuid, permissionDynamicContexts) -> {
+                if(player == null) {
+                    return false;
+                } else {
+                    return player.hasPermissions(1);
+                }
+            });
 
     public static void modInit() {
         RandomTPMod.init();

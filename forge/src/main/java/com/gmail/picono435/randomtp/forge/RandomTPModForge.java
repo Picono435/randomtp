@@ -1,8 +1,7 @@
-package com.gmail.picono435.randomtp.minecraftforge;
+package com.gmail.picono435.randomtp.forge;
 
 import com.gmail.picono435.randomtp.RandomTPMod;
 
-import com.gmail.picono435.randomtp.forge.EventBuses;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 

@@ -83,18 +83,3 @@ components.java {
         skip()
     }
 }
-
-publishing {
-    publications {
-        mavenNeoForge(MavenPublication) {
-            artifactId = rootProject.archives_name + "-" + project.name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
-}
-

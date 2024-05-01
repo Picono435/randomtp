@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 public class RandomTPAPIImpl {
-	
+
 	public static boolean hasPermission(CommandSourceStack source, String permission) {
 		try {
 			if(permission.equalsIgnoreCase("randomtp.command.basic")) {
