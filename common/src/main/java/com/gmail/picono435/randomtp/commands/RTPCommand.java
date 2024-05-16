@@ -15,9 +15,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RTPCommand {
-	
+
 	private static Map<String, Long> cooldowns = new HashMap<String, Long>();
-	
+
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(Commands.literal("rtp").requires(source -> RandomTPAPI.hasPermission(source, "randomtp.command.basic"))
 				.executes(context -> runCommand(context.getSource().getPlayerOrException())
@@ -26,7 +26,7 @@ public class RTPCommand {
 				.executes(context -> runCommand(context.getSource().getPlayerOrException())
 				));
 	}
-	
+
 	private static int runCommand(ServerPlayer p) {
 		try {
 			if(!RandomTPAPI.checkCooldown(p, cooldowns) && !RandomTPAPI.hasPermission(p, "randomtp.cooldown.exempt")) {
@@ -39,13 +39,11 @@ public class RTPCommand {
 				if(Config.useOriginal()) {
 					TextComponent finding = new TextComponent(Messages.getFinding().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(finding, p.getUUID());
-					new Thread(() -> {
-						if(!Config.getDefaultWorld().equals("playerworld")) {
-							RandomTPAPI.randomTeleport(p, RandomTPAPI.getWorld(Config.getDefaultWorld(), p.getServer()));
-						} else {
-							RandomTPAPI.randomTeleport(p, p.getLevel());
-						}
-					}).start();
+					if(!Config.getDefaultWorld().equals("playerworld")) {
+						RandomTPAPI.randomTeleport(p, RandomTPAPI.getWorld(Config.getDefaultWorld(), p.getServer()));
+					} else {
+						RandomTPAPI.randomTeleport(p, p.getLevel());
+					}
 					cooldowns.put(p.getName().getString(), System.currentTimeMillis());
 					return 1;
 				}
@@ -53,11 +51,13 @@ public class RTPCommand {
 				BigDecimal num = new BigDecimal(cal);
 				String maxDistance = num.toPlainString();
 				if(Config.getMaxDistance() == 0) {
-					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + maxDistance + " false " + p.getName().getString().toLowerCase());
+					String command = "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + maxDistance + " false " + p.getName().getString().toLowerCase();
+					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), command);
 					TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(successful, p.getUUID());
 				} else {
-					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + Config.getMaxDistance() + " false " + p.getName().getString().toLowerCase());
+					String command = "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + Config.getMaxDistance() + " false " + p.getName().getString().toLowerCase();
+					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), command);
 					TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(successful, p.getUUID());
 				}

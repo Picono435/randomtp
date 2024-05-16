@@ -17,16 +17,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RTPDCommand {
-	
+
 	private static Map<String, Long> cooldowns = new HashMap<String, Long>();
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(Commands.literal("rtpd").requires(source -> RandomTPAPI.hasPermission(source, "randomtp.command.interdim"))
 				.then(
 						Commands.argument("dimension", DimensionArgument.dimension())
-						.executes(context -> 
-							runCommand(context.getSource().getPlayerOrException(), DimensionArgument.getDimension(context, "dimension"))
-						)
+								.executes(context ->
+										runCommand(context.getSource().getPlayerOrException(), DimensionArgument.getDimension(context, "dimension"))
+								)
 				));
 		dispatcher.register(Commands.literal("dimensionrtp").requires(source -> RandomTPAPI.hasPermission(source, "randomtp.command.interdim"))
 				.then(
@@ -36,7 +36,7 @@ public class RTPDCommand {
 								)
 				));
 	}
-	
+
 	private static int runCommand(ServerPlayer p, ServerLevel dim) {
 		try {
 			if(!RandomTPAPI.checkCooldown(p, cooldowns) && !RandomTPAPI.hasPermission(p, "randomtp.cooldown.exempt")) {
@@ -54,9 +54,7 @@ public class RTPDCommand {
 				if(Config.useOriginal()) {
 					TextComponent finding = new TextComponent(Messages.getFinding().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(finding, p.getUUID());
-					new Thread(() -> {
-						RandomTPAPI.randomTeleport(p, dim);
-					}).start();
+					RandomTPAPI.randomTeleport(p, dim);
 					cooldowns.put(p.getName().getString(), System.currentTimeMillis());
 					return 1;
 				}
@@ -66,11 +64,13 @@ public class RTPDCommand {
 				BigDecimal num = new BigDecimal(cal);
 				String maxDistance = num.toPlainString();
 				if(Config.getMaxDistance() == 0) {
-					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + maxDistance + " false " + p.getName().getString().toLowerCase());
+					String command = "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + maxDistance + " false " + p.getName().getString().toLowerCase();
+					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), command);
 					TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(successful, p.getUUID());
 				} else {
-					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + Config.getMaxDistance() + " false " + p.getName().getString().toLowerCase());
+					String command = "spreadplayers " + p.getLevel().getWorldBorder().getCenterX() + " " + p.getLevel().getWorldBorder().getCenterZ() + " " + Config.getMinDistance() + " " + Config.getMaxDistance() + " false " + p.getName().getString().toLowerCase();
+					p.getServer().getCommands().performCommand(p.getServer().createCommandSourceStack(), command);
 					TextComponent successful = new TextComponent(Messages.getSuccessful().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendMessage(successful, p.getUUID());
 				}
@@ -81,14 +81,14 @@ public class RTPDCommand {
 		}
 		return 1;
 	}
-	
-	  private static boolean inWhitelist(String dimension) {
-		  //WHITELIST
-		  if(Config.useWhitelist()) {
-			  return Config.getAllowedDimensions().contains(dimension);
-		  //BLACKLIST
-		  } else {
-			  return !Config.getAllowedDimensions().contains(dimension);
-		  }
-	  }
+
+	private static boolean inWhitelist(String dimension) {
+		//WHITELIST
+		if(Config.useWhitelist()) {
+			return Config.getAllowedDimensions().contains(dimension);
+			//BLACKLIST
+		} else {
+			return !Config.getAllowedDimensions().contains(dimension);
+		}
+	}
 }
