@@ -1,4 +1,4 @@
-package com.gmail.picono435.randomtp.neoforge.config.neoforge;
+package com.gmail.picono435.randomtp.config.neoforge;
 
 import net.neoforged.fml.loading.FMLPaths;
 

@@ -1,4 +1,4 @@
-package com.gmail.picono435.randomtp.neoforge.api.neoforge;
+package com.gmail.picono435.randomtp.api.neoforge;
 
 import com.gmail.picono435.randomtp.neoforge.EventBuses;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
