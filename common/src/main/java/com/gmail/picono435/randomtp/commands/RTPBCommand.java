@@ -9,7 +9,6 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceOrTagArgument;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -22,9 +21,6 @@ import java.util.Map;
 
 public class RTPBCommand {
 
-	private static final DynamicCommandExceptionType ERROR_BIOME_INVALID = new DynamicCommandExceptionType((object) -> {
-		return Component.translatable("commands.locate.biome.invalid", new Object[]{object});
-	});
 	private static Map<String, Long> cooldowns = new HashMap<String, Long>();
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext) {
@@ -43,7 +39,7 @@ public class RTPBCommand {
 								)
 				));
 	}
-	
+
 	private static int runCommand(ServerPlayer p, ResourceOrTagArgument.Result<Biome> biome) {
 		try {
 			if(!RandomTPAPI.checkCooldown(p, cooldowns) && !RandomTPAPI.hasPermission(p, "randomtp.cooldown.exempt")) {
@@ -62,9 +58,7 @@ public class RTPBCommand {
 				if(Config.useOriginal()) {
 					Component finding = Component.literal(Messages.getFinding().replaceAll("\\{playerName\\}", p.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)p.position().x).replaceAll("\\{blockY\\}", "" + (int)p.position().y).replaceAll("\\{blockZ\\}", "" + (int)p.position().z).replaceAll("&", "§"));
 					p.sendSystemMessage(finding, false);
-					new Thread(() -> {
-						RandomTPAPI.randomTeleport(p, p.getLevel(), biomeKey);
-					}).start();
+					RandomTPAPI.randomTeleport(p, p.getLevel(), biomeKey);
 					cooldowns.put(p.getName().getString(), System.currentTimeMillis());
 					return 1;
 				}
@@ -75,14 +69,14 @@ public class RTPBCommand {
 		}
 		return 1;
 	}
-	
-	  private static boolean inWhitelist(String dimension) {
-		  //WHITELIST
-		  if(Config.useWhitelist()) {
-			  return Config.getAllowedDimensions().contains(dimension);
-		  //BLACKLIST
-		  } else {
-			  return !Config.getAllowedDimensions().contains(dimension);
-		  }
-	  }
+
+	private static boolean inWhitelist(String dimension) {
+		//WHITELIST
+		if(Config.useWhitelist()) {
+			return Config.getAllowedDimensions().contains(dimension);
+			//BLACKLIST
+		} else {
+			return !Config.getAllowedDimensions().contains(dimension);
+		}
+	}
 }
