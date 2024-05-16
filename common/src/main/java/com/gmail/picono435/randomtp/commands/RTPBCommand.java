@@ -21,9 +21,6 @@ import java.util.Map;
 
 public class RTPBCommand {
 
-	private static final DynamicCommandExceptionType ERROR_BIOME_INVALID = new DynamicCommandExceptionType((object) -> {
-		return Component.translatable("commands.locate.biome.invalid", new Object[]{object});
-	});
 	private static Map<String, Long> cooldowns = new HashMap<String, Long>();
 
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext) {
