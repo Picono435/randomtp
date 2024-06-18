@@ -31,7 +31,7 @@ The best Random Teleport mod ever! With this mod you will be able to random tele
 
 ## Versions
 
-This mod is available for Fabric and Forge in these versions:
+This mod is available for the following Minecraft versions in the following platforms:
 
 ![Version Compability](https://piconodev.com/img/RandomTP_Table.png)
 
