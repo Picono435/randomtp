@@ -21,6 +21,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CactusBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -107,7 +109,8 @@ public class RandomTPAPI {
                 }
 
                 player.getServer().submit(() -> {
-                    player.teleportTo(world, mutableBlockPos.getX(), mutableBlockPos.getY(), mutableBlockPos.getZ(), player.getXRot(), player.getYRot());
+                    TeleportTransition teleportTransition = new TeleportTransition(world, mutableBlockPos.getCenter(), Vec3.ZERO, player.getYRot(), player.getXRot(), false, false, Set.of(), null);
+                    player.teleport(teleportTransition);
                     Component successful = Component.literal(Messages.getSuccessful().replaceAll("\\{playerName\\}", player.getName().getString()).replaceAll("\\{blockX\\}", "" + (int)player.position().x).replaceAll("\\{blockY\\}", "" + (int)player.position().y).replaceAll("\\{blockZ\\}", "" + (int)player.position().z).replaceAll("&", "§"));
                     player.sendSystemMessage(successful, false);
                 });

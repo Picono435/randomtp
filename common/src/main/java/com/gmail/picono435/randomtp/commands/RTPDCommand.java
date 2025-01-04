@@ -15,7 +15,7 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 
 public class RTPDCommand {
 	
@@ -59,8 +59,8 @@ public class RTPDCommand {
 					cooldowns.put(p.getName().getString(), System.currentTimeMillis());
 					return 1;
 				}
-				DimensionTransition dimensionTransition = new DimensionTransition(dim, p, DimensionTransition.DO_NOTHING);
-				p.changeDimension(dimensionTransition);
+				TeleportTransition teleportTransition = new TeleportTransition(dim, p, TeleportTransition.DO_NOTHING);
+				p.teleport(teleportTransition);
 				double cal = p.serverLevel().getWorldBorder().getSize()/2;
 				BigDecimal num = new BigDecimal(cal);
 				String maxDistance = num.toPlainString();
