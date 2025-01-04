@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'RandomTP-1.20'
+rootProject.name = 'RandomTP-1.21'
 
 include 'common'
 include 'fabric'
